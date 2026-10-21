@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:convert';
 
-void main(){
+void main() {
   stdout.encoding = utf8;
   stderr.encoding = utf8;
   stdout.write('название: ');
@@ -16,7 +16,11 @@ void main(){
   stdout.write('количество страниц:');
   final int pages = int.tryParse(stdin.readLineSync() ?? '') ?? 0;
 
-  final String category = pages < 150 ? 'брошюра' : pages < 400 ? 'книга' : 'том'; 
+  final String category = pages < 150
+      ? 'брошюра'
+      : pages < 400
+      ? 'книга'
+      : 'том';
 
   final double readingHour = pages / 50;
 
@@ -105,7 +109,9 @@ void main(){
 
   if (genres.isNotEmpty) {
     print('');
-    print('Содержит ли множество "$firstGenre"? ${genres.contains(firstGenre)}');
+    print(
+      'Содержит ли множество "$firstGenre"? ${genres.contains(firstGenre)}',
+    );
   }
 
   print('');
@@ -175,9 +181,9 @@ void main(){
   // / - деление с плавающей точкой (ВОЗВРАЩАЕТ DOUBLE)
   // ~/ деление нацело(возвращает int, остаток отбрасывается)
   // % остаток от деления
-  print(7/2); //3.5 (double)
-  print(7~/2); //3 (int)
-  print(7%2); //1 (остаток)
+  print(7 / 2); //3.5 (double)
+  print(7 ~/ 2); //3 (int)
+  print(7 % 2); //1 (остаток)
   // ленивое вычисление операторов && и ||
   // правый операнд вычисляется только если результат ещё не опредедлён
   // для && если левый false - правый не вычисляется
@@ -186,29 +192,30 @@ void main(){
     print('->sideEffect() вызвана');
     return true;
   }
- bool alwaysFalse() => false;
- print(alwaysFalse() && sideEffect());
+
+  bool alwaysFalse() => false;
+  print(alwaysFalse() && sideEffect());
 
   print('--||--');
-  bool alwaysTrue() =>true;
+  bool alwaysTrue() => true;
   print(alwaysTrue() && sideEffect());
 
   print('--оба вычисляются--');
-  print(true && sideEffect());//sideEffect() вызывается
-  print(false || sideEffect());//sideEffect() вызывается
+  print(true && sideEffect()); //sideEffect() вызывается
+  print(false || sideEffect()); //sideEffect() вызывается
 
   //операторы ?., ??, ??=
- String? getMaybeNull() => null; 
-  String? maybeNull = getMaybeNull(); 
+  String? getMaybeNull() => null;
+  String? maybeNull = getMaybeNull();
   String? notNull = 'Dart'; //не Null
 
   //?. - безопасны доступ: если объект Null, вернёт Null, а не бросит исключение
-  print(maybeNull?.length);//null
-  print(notNull.length);//4
+  print(maybeNull?.length); //null
+  print(notNull.length); //4
 
   //?? - если Null, то взять альтернативу
-  print(maybeNull ?? 'default');//default
-  print(notNull);//Dart
+  print(maybeNull ?? 'default'); //default
+  print(notNull); //Dart
 
   //??= - присвоить значение только если переменная Null
   maybeNull ??= 'assigned';
@@ -219,14 +226,14 @@ void main(){
   // const  — константа времени компиляции, объект глубоко неизменяем.
 
   final finalList = [1, 2, 3];
-  finalList.add(4);           // OK: содержимое можно менять
+  finalList.add(4); // OK: содержимое можно менять
   // finalList = [5, 6];      // Ошибка: переприсвоить нельзя
-  print(finalList);           // [1, 2, 3, 4]
+  print(finalList); // [1, 2, 3, 4]
 
   const constList = [1, 2, 3];
   // constList.add(4);        // Ошибка: содержимое const-списка неизменяемо
   // constList = [5];         // Ошибка: переприсвоить нельзя
-  print(constList);           // [1, 2, 3]
+  print(constList); // [1, 2, 3]
   //Каскадный оператор .. с StringBuffer
   // .. позволяет вызывать несколько методов на одном объекте, не переписывая имя объекта каждый раз.
   // Выражение возвращает сам объект (а не результат последнего метода).
@@ -237,9 +244,9 @@ void main(){
     ..write('world')
     ..writeln('!');
 
-  print(buffer.toString());   // Hello, world!\n
+  print(buffer.toString()); // Hello, world!\n
 
   // Эквивалент без каскада:
   // buffer.write('Hello');
   // buffer.write(', ');
-  }
+}

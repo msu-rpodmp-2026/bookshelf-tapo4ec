@@ -58,9 +58,9 @@ void demoOrder() {
 // @FUTURE@
 /// Изображает обращение к медленному источнику данных.
 Future<String> loadTitle({bool fail = false}) => Future<String>.delayed(
-  const Duration(milliseconds: 200),
-  () => fail ? throw StateError('источник недоступен') : 'Интерстеллар',
-);
+      const Duration(milliseconds: 200),
+      () => fail ? throw StateError('источник недоступен') : 'Интерстеллар',
+    );
 
 Future<void> demoFuture() async {
   print('\n=== 2. Future: then / catchError ===\n');
@@ -232,8 +232,8 @@ Future<void> demoNetwork() async {
   try {
     final HttpClientRequest request = await client.getUrl(uri);
     final HttpClientResponse response = await request.close().timeout(
-      const Duration(seconds: 10),
-    );
+          const Duration(seconds: 10),
+        );
 
     if (response.statusCode != 200) {
       throw HttpException('сервис вернул ${response.statusCode}');

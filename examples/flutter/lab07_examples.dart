@@ -27,12 +27,12 @@ class _ExampleAppState extends State<ExampleApp> {
   // Обе темы строятся из ОДНОГО исходного цвета. Все оттенки —
   // фон, текст, границы — Flutter подбирает сам и согласованно.
   ThemeData _theme(Brightness brightness) => ThemeData(
-    useMaterial3: true,
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: const Color(0xFF3F51B5),
-      brightness: brightness,
-    ),
-  );
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF3F51B5),
+          brightness: brightness,
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -212,11 +212,11 @@ class RowColumnDemo extends StatelessWidget {
   }
 
   Widget _bar(BuildContext context, String label) => Container(
-    height: 32,
-    alignment: Alignment.center,
-    color: Theme.of(context).colorScheme.secondaryContainer,
-    child: Text('flex: $label'),
-  );
+        height: 32,
+        alignment: Alignment.center,
+        color: Theme.of(context).colorScheme.secondaryContainer,
+        child: Text('flex: $label'),
+      );
 }
 // @ROWCOLUMN_END@
 

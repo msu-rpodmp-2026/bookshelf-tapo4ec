@@ -76,10 +76,8 @@ Future<void> demoStream(Directory work) async {
   // Файл не загружается в память целиком: строки приходят по одной.
   // Так читают журналы и выгрузки, которые могут весить гигабайты.
   int count = 0;
-  final Stream<String> lines = big
-      .openRead()
-      .transform(utf8.decoder)
-      .transform(const LineSplitter());
+  final Stream<String> lines =
+      big.openRead().transform(utf8.decoder).transform(const LineSplitter());
 
   await for (final String line in lines) {
     if (line.trim().isNotEmpty) {
@@ -143,8 +141,8 @@ void demoJson() {
   // Строка JSON → объект Dart.
   // Объект превращается в Map<String, dynamic>, массив — в List<dynamic>.
   final Map<String, dynamic> decoded = jsonDecode(raw) as Map<String, dynamic>;
-  final List<Map<String, dynamic>> movies = (decoded['movies'] as List<dynamic>)
-      .cast<Map<String, dynamic>>();
+  final List<Map<String, dynamic>> movies =
+      (decoded['movies'] as List<dynamic>).cast<Map<String, dynamic>>();
   print('Первый фильм: ${movies.first['title']}');
 }
 // @JSON_END@
@@ -161,19 +159,19 @@ class Movie {
   const Movie({required this.title, this.year = 0, this.rating});
 
   Map<String, Object?> toJson() => <String, Object?>{
-    'title': title,
-    'year': year,
-    // Поле добавляется только если оно есть
-    if (rating != null) 'rating': rating,
-  };
+        'title': title,
+        'year': year,
+        // Поле добавляется только если оно есть
+        if (rating != null) 'rating': rating,
+      };
 
   // Данные из файла и из сети — НЕДОВЕРЕННЫЕ. Каждое поле разбирается
   // так, чтобы выдержать пропуск, null и неверный тип.
   factory Movie.fromJson(Map<String, dynamic> json) => Movie(
-    title: json['title'] as String? ?? 'Без названия',
-    year: (json['year'] as num?)?.toInt() ?? 0,
-    rating: (json['rating'] as num?)?.toDouble(),
-  );
+        title: json['title'] as String? ?? 'Без названия',
+        year: (json['year'] as num?)?.toInt() ?? 0,
+        rating: (json['rating'] as num?)?.toDouble(),
+      );
 
   @override
   String toString() => '$title ($year)${rating == null ? '' : ', $rating'}';

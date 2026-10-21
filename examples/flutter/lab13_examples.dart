@@ -193,8 +193,8 @@ class MovieListScreen extends StatelessWidget {
         // read — получить модель БЕЗ подписки. В обработчиках событий
         // нужен именно он: подписка здесь не нужна и приведёт к ошибке
         onPressed: () => context.read<MovieListModel>().add(
-          'Новый фильм ${DateTime.now().second}',
-        ),
+              'Новый фильм ${DateTime.now().second}',
+            ),
         child: const Icon(Icons.add),
       ),
       body: Column(

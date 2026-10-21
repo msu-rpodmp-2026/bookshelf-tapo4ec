@@ -35,7 +35,7 @@ void main() {
 
   print('');
   print('=' * 44);
-  print('$title');
+  print(title);
   print('автор: $author');
   print('инициалы: $initials');
   print('год: $year');
@@ -178,4 +178,7 @@ void main() {
   }
   print('');
   print('Длина списка all: ${all.length}');
+  // / - деление с плавающей точкой (ВОЗВРАЩАЕТ DOUBLE)
+  // ~/ деление нацело(возвращает int, остаток отбрасывается)
+  // % остаток от деления
 }

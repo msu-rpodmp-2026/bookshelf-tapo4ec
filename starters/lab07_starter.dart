@@ -42,7 +42,12 @@ class Book {
 
 const List<Book> demoBooks = <Book>[
   Book(title: 'Основы Dart', author: 'С. А. Чернышев', year: 2024, pages: 521),
-  Book(title: 'Flutter на практике', author: 'Ф. Заметти', year: 2020, pages: 328),
+  Book(
+    title: 'Flutter на практике',
+    author: 'Ф. Заметти',
+    year: 2020,
+    pages: 328,
+  ),
   Book(title: 'Базы данных', author: 'В. П. Агальцов', year: 2021, pages: 349),
 ];
 
@@ -60,9 +65,7 @@ class NotDoneYet extends StatelessWidget {
     decoration: BoxDecoration(
       color: Theme.of(context).colorScheme.surfaceContainerHighest,
       borderRadius: BorderRadius.circular(8),
-      border: Border.all(
-        color: Theme.of(context).colorScheme.outlineVariant,
-      ),
+      border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
     ),
     alignment: Alignment.center,
     child: Text('TODO: $what'),

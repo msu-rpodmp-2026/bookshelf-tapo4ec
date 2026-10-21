@@ -1,5 +1,5 @@
-name: bookshelf_consoleinclude:
- package:lints/recommended.yaml
+name: bookshelf_console
+include: package:lints/recommended.yaml
 
 analyzer:
   exclude:

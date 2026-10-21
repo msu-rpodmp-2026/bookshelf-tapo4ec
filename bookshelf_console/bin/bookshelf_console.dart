@@ -35,7 +35,7 @@ void main() {
 
   print('');
   print('=' * 44);
-  print('$title');
+  print(title);
   print('автор: $author');
   print('инициалы: $initials');
   print('год: $year');
@@ -181,71 +181,4 @@ void main() {
   // / - деление с плавающей точкой (ВОЗВРАЩАЕТ DOUBLE)
   // ~/ деление нацело(возвращает int, остаток отбрасывается)
   // % остаток от деления
-  print(7 / 2); //3.5 (double)
-  print(7 ~/ 2); //3 (int)
-  print(7 % 2); //1 (остаток)
-  // ленивое вычисление операторов && и ||
-  // правый операнд вычисляется только если результат ещё не опредедлён
-  // для && если левый false - правый не вычисляется
-  // для || если левый true - правый не вычисляется
-  bool sideEffect() {
-    print('->sideEffect() вызвана');
-    return true;
-  }
-
-  print('--&&--');
-  print(false && sideEffect()); //sideEffect() не вызывается, результат false
-
-  print('--||--');
-  print(true || sideEffect()); //sideEffect() не вызывается, результат true
-
-  print('--оба вычисляются--');
-  print(true && sideEffect()); //sideEffect() вызывается
-  print(false || sideEffect()); //sideEffect() вызывается
-
-  //операторы ?., ??, ??=
-  String? maybeNull; //null
-  String? notNull = 'Dart'; //не Null
-
-  //?. - безопасны доступ: если объект Null, вернёт Null, а не бросит исключение
-  print(maybeNull?.length); //nell
-  print(notNull?.length); //4
-
-  //?? - если Null, то взять альтернативу
-  print(maybeNull ?? 'default'); //default
-  print(notNull ?? 'default'); //Dart
-
-  //??= - присвоить значение только если переменная Null
-  maybeNull ??= 'assigned';
-  print(maybeNull);
-  notNull ??= 'ignored'; // не сработает т.к. notNull != null
-  print(notNull);
-  //Различие final и const на примере списка
-  // final  — переменная инициализируется один раз (во время выполнения), но СОДЕРЖИМОЕ объекта можно менять.
-  // const  — константа времени компиляции, объект глубоко неизменяем.
-
-  final finalList = [1, 2, 3];
-  finalList.add(4); // OK: содержимое можно менять
-  // finalList = [5, 6];      // Ошибка: переприсвоить нельзя
-  print(finalList); // [1, 2, 3, 4]
-
-  const constList = [1, 2, 3];
-  // constList.add(4);        // Ошибка: содержимое const-списка неизменяемо
-  // constList = [5];         // Ошибка: переприсвоить нельзя
-  print(constList); // [1, 2, 3]
-  //Каскадный оператор .. с StringBuffer
-  // .. позволяет вызывать несколько методов на одном объекте, не переписывая имя объекта каждый раз.
-  // Выражение возвращает сам объект (а не результат последнего метода).
-
-  final buffer = StringBuffer()
-    ..write('Hello')
-    ..write(', ')
-    ..write('world')
-    ..writeln('!');
-
-  print(buffer.toString()); // Hello, world!\n
-
-  // Эквивалент без каскада:
-  // buffer.write('Hello');
-  // buffer.write(', ');
 }

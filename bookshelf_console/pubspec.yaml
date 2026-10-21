@@ -1,0 +1,10 @@
+name: bookshelf_consoleinclude:
+ package:lints/recommended.yaml
+
+analyzer:
+  exclude:
+    - build/**
+    - .dart_tool/**
+    - "**/*.g.dart"
+    - test/** # (Уберите эту строку, если хотите проверять тесты)
+    - example/** # (Уберите, если хотите проверять примеры)

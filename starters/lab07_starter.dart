@@ -60,16 +60,17 @@ class NotDoneYet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-    height: height,
-    margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-    decoration: BoxDecoration(
-      color: Theme.of(context).colorScheme.surfaceContainerHighest,
-      borderRadius: BorderRadius.circular(8),
-      border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
-    ),
-    alignment: Alignment.center,
-    child: Text('TODO: $what'),
-  );
+        height: height,
+        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surfaceContainerHighest,
+          borderRadius: BorderRadius.circular(8),
+          border:
+              Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+        ),
+        alignment: Alignment.center,
+        child: Text('TODO: $what'),
+      );
 }
 
 // ===========================================================================

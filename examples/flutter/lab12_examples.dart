@@ -22,13 +22,13 @@ class ExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-    debugShowCheckedModeBanner: false,
-    theme: ThemeData(
-      colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
-      useMaterial3: true,
-    ),
-    home: const DemoScreen(),
-  );
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+          useMaterial3: true,
+        ),
+        home: const DemoScreen(),
+      );
 }
 
 // @HEAVY@
@@ -131,8 +131,7 @@ class _DemoScreenState extends State<DemoScreen> {
     }
     setState(() {
       _busy = false;
-      _status =
-          'В изоляте: $result за ${watch.elapsedMilliseconds} мс '
+      _status = 'В изоляте: $result за ${watch.elapsedMilliseconds} мс '
           '— индикатор крутился';
     });
   }
@@ -230,21 +229,21 @@ class _OptimizationDemoState extends State<OptimizationDemo> {
 ///
 /// cacheWidth заставляет декодировать картинку сразу уменьшенной.
 Widget cover(String url) => Image.network(
-  url,
-  width: 56,
-  height: 84,
-  fit: BoxFit.cover,
-  // Декодировать в 112 px (двойная ширина для плотных экранов),
-  // а не в исходные 1200
-  cacheWidth: 112,
-  loadingBuilder:
-      (BuildContext context, Widget child, ImageChunkEvent? progress) =>
+      url,
+      width: 56,
+      height: 84,
+      fit: BoxFit.cover,
+      // Декодировать в 112 px (двойная ширина для плотных экранов),
+      // а не в исходные 1200
+      cacheWidth: 112,
+      loadingBuilder: (BuildContext context, Widget child,
+              ImageChunkEvent? progress) =>
           progress == null
-          ? child
-          : const Center(child: CircularProgressIndicator(strokeWidth: 2)),
-  errorBuilder: (BuildContext context, Object error, StackTrace? stack) =>
-      const Icon(Icons.broken_image_outlined),
-);
+              ? child
+              : const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+      errorBuilder: (BuildContext context, Object error, StackTrace? stack) =>
+          const Icon(Icons.broken_image_outlined),
+    );
 // @IMAGES_END@
 
 // @LAZY@
@@ -256,8 +255,7 @@ mixin LazyLoading<T extends StatefulWidget> on State<T> {
 
   void initLazyLoading(Future<void> Function() loadNext) {
     scrollController.addListener(() {
-      final bool nearEnd =
-          scrollController.position.pixels >=
+      final bool nearEnd = scrollController.position.pixels >=
           scrollController.position.maxScrollExtent - 400;
       if (nearEnd && !loading) {
         loading = true;

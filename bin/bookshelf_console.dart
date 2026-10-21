@@ -1,4 +1,4 @@
-z`import 'dart:io';
+import 'dart:io';
 import 'dart:convert';
 
 void main(){
@@ -186,32 +186,33 @@ void main(){
     print('->sideEffect() вызвана');
     return true;
   }
-  print('--&&--');
-  print(false && sideEffect()); //sideEffect() не вызывается, результат false
+ bool alwaysFalse() => false;
+ print(alwaysFalse() && sideEffect());
 
   print('--||--');
-  print(true || sideEffect()); //sideEffect() не вызывается, результат true
+  bool alwaysTrue() =>true;
+  print(alwaysTrue() && sideEffect());
 
   print('--оба вычисляются--');
   print(true && sideEffect());//sideEffect() вызывается
   print(false || sideEffect());//sideEffect() вызывается
 
   //операторы ?., ??, ??=
-  String? maybeNull;//null
-  String? notNull = 'Dart';//не Null
+ String? getMaybeNull() => null; 
+  String? maybeNull = getMaybeNull(); 
+  String? notNull = 'Dart'; //не Null
 
   //?. - безопасны доступ: если объект Null, вернёт Null, а не бросит исключение
-  print(maybeNull?.length);//nell
-  print(notNull?.length);//4
+  print(maybeNull?.length);//null
+  print(notNull.length);//4
 
   //?? - если Null, то взять альтернативу
   print(maybeNull ?? 'default');//default
-  print(notNull ?? 'default');//Dart
+  print(notNull);//Dart
 
   //??= - присвоить значение только если переменная Null
   maybeNull ??= 'assigned';
   print(maybeNull);
-  notNull ??='ignored'; // не сработает т.к. notNull != null
   print(notNull);
   //Различие final и const на примере списка
   // final  — переменная инициализируется один раз (во время выполнения), но СОДЕРЖИМОЕ объекта можно менять.

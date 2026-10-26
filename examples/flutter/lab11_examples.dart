@@ -38,19 +38,19 @@ class Movie {
   });
 
   Map<String, Object?> toMap() => <String, Object?>{
-        // id не передаём при вставке: база назначит его сама
-        if (id != null) 'id': id,
-        'title': title,
-        'director': director,
-        'year': year,
-      };
+    // id не передаём при вставке: база назначит его сама
+    if (id != null) 'id': id,
+    'title': title,
+    'director': director,
+    'year': year,
+  };
 
   factory Movie.fromMap(Map<String, Object?> row) => Movie(
-        id: row['id'] as int?,
-        title: row['title'] as String? ?? '',
-        director: row['director'] as String? ?? '',
-        year: (row['year'] as num?)?.toInt() ?? 0,
-      );
+    id: row['id'] as int?,
+    title: row['title'] as String? ?? '',
+    director: row['director'] as String? ?? '',
+    year: (row['year'] as num?)?.toInt() ?? 0,
+  );
 
   Movie copyWith({int? id}) =>
       Movie(id: id ?? this.id, title: title, director: director, year: year);
@@ -114,8 +114,9 @@ class SqfliteMovieRepository implements MovieRepository {
       // Склейка строк открыла бы внедрение SQL и ломалась бы
       // на любом апострофе в названии.
       where: (query == null || query.isEmpty) ? null : 'title LIKE ?',
-      whereArgs:
-          (query == null || query.isEmpty) ? null : <Object?>['%$query%'],
+      whereArgs: (query == null || query.isEmpty)
+          ? null
+          : <Object?>['%$query%'],
       orderBy: 'title COLLATE NOCASE',
     );
     return rows.map(Movie.fromMap).toList();
@@ -186,13 +187,13 @@ class ExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
-          useMaterial3: true,
-        ),
-        home: const DatabaseScreen(),
-      );
+    debugShowCheckedModeBanner: false,
+    theme: ThemeData(
+      colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
+      useMaterial3: true,
+    ),
+    home: const DatabaseScreen(),
+  );
 }
 
 // @FUTUREBUILDER@

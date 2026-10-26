@@ -34,14 +34,14 @@ class Book {
 
 /// Генератор большого каталога для задания 1.
 List<Book> generateBooks(int count) => List<Book>.generate(
-      count,
-      (int i) => Book(
-        id: i + 1,
-        title: 'Книга ${i + 1}',
-        author: 'Автор ${(i % 20) + 1}',
-        isRead: i % 3 == 0,
-      ),
-    );
+  count,
+  (int i) => Book(
+    id: i + 1,
+    title: 'Книга ${i + 1}',
+    author: 'Автор ${(i % 20) + 1}',
+    isRead: i % 3 == 0,
+  ),
+);
 
 class NotDoneYet extends StatelessWidget {
   final String what;
@@ -50,15 +50,15 @@ class NotDoneYet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        height: height,
-        margin: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surfaceContainerHighest,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        alignment: Alignment.center,
-        child: Text('TODO: $what'),
-      );
+    height: height,
+    margin: const EdgeInsets.all(8),
+    decoration: BoxDecoration(
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
+      borderRadius: BorderRadius.circular(8),
+    ),
+    alignment: Alignment.center,
+    child: Text('TODO: $what'),
+  );
 }
 
 void main() => runApp(const StarterApp());
@@ -68,13 +68,13 @@ class StarterApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
-        home: const HomeScreen(),
-      );
+    debugShowCheckedModeBanner: false,
+    theme: ThemeData(
+      colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+      useMaterial3: true,
+    ),
+    home: const HomeScreen(),
+  );
 }
 
 class HomeScreen extends StatefulWidget {
@@ -107,9 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: <Widget>[
           SizedBox(height: 180, child: StatsDonut(books: _books)),
           const Divider(height: 1),
-          Expanded(
-            child: BookList(books: _books, onRemove: _remove),
-          ),
+          Expanded(child: BookList(books: _books, onRemove: _remove)),
         ],
       ),
     );

@@ -209,8 +209,8 @@ class MovieList extends StatelessWidget {
 
   Future<void> _openDetail(BuildContext context, Movie movie) async {
     // push возвращает Future: он завершится, когда экран закроют
-    final Object? result =
-        await Navigator.of(context).pushNamed(Routes.detail, arguments: movie);
+    final Object? result = await Navigator.of(context)
+        .pushNamed(Routes.detail, arguments: movie);
 
     // За время ожидания виджет мог быть удалён из дерева
     if (!context.mounted) {

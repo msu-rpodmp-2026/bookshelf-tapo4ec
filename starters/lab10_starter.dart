@@ -24,10 +24,10 @@ import 'package:flutter/material.dart';
 enum ReadingStatus { planned, reading, finished }
 
 String statusTitle(ReadingStatus s) => switch (s) {
-      ReadingStatus.planned => 'В планах',
-      ReadingStatus.reading => 'Читаю',
-      ReadingStatus.finished => 'Прочитано',
-    };
+  ReadingStatus.planned => 'В планах',
+  ReadingStatus.reading => 'Читаю',
+  ReadingStatus.finished => 'Прочитано',
+};
 
 class Book {
   final String title;
@@ -52,15 +52,15 @@ class NotDoneYet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        height: height,
-        margin: const EdgeInsets.symmetric(vertical: 8),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surfaceContainerHighest,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        alignment: Alignment.center,
-        child: Text('TODO: $what'),
-      );
+    height: height,
+    margin: const EdgeInsets.symmetric(vertical: 8),
+    decoration: BoxDecoration(
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
+      borderRadius: BorderRadius.circular(8),
+    ),
+    alignment: Alignment.center,
+    child: Text('TODO: $what'),
+  );
 }
 
 void main() => runApp(const StarterApp());
@@ -70,13 +70,13 @@ class StarterApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
-          useMaterial3: true,
-        ),
-        home: const HomeScreen(),
-      );
+    debugShowCheckedModeBanner: false,
+    theme: ThemeData(
+      colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
+      useMaterial3: true,
+    ),
+    home: const HomeScreen(),
+  );
 }
 
 // ===========================================================================
@@ -204,12 +204,12 @@ class _EditScreenState extends State<EditScreen> {
   }
 
   Book _buildBook() => Book(
-        title: _title.text.trim(),
-        author: _author.text.trim(),
-        // TODO 2.4: соберите остальные поля. Год — int.tryParse(_year.text).
-        status: _status,
-        rating: _rating,
-      );
+    title: _title.text.trim(),
+    author: _author.text.trim(),
+    // TODO 2.4: соберите остальные поля. Год — int.tryParse(_year.text).
+    status: _status,
+    rating: _rating,
+  );
 
   Future<void> _save() async {
     // TODO 3.1: прервите сохранение, если форма не проходит проверку:

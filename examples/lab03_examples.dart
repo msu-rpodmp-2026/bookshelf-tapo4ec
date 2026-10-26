@@ -69,16 +69,14 @@ class Poster {
   Poster(this.title, this.year);
 
   // Именованный: другой способ создать объект
-  Poster.unknown()
-      : title = 'Без названия',
-        year = 0;
+  Poster.unknown() : title = 'Без названия', year = 0;
 
   // Фабричный: НЕ обязан создавать новый объект.
   // Здесь он разбирает данные, пришедшие из файла или из сети.
   factory Poster.fromMap(Map<String, Object?> data) => Poster(
-        data['title'] as String? ?? 'Без названия',
-        (data['year'] as num?)?.toInt() ?? 0,
-      );
+    data['title'] as String? ?? 'Без названия',
+    (data['year'] as num?)?.toInt() ?? 0,
+  );
 
   @override
   String toString() => '$title ($year)';
@@ -249,9 +247,9 @@ enum WatchStatus {
 
   // Разбор значения, пришедшего строкой из файла
   static WatchStatus fromName(String name) => values.firstWhere(
-        (WatchStatus s) => s.name == name,
-        orElse: () => planned,
-      );
+    (WatchStatus s) => s.name == name,
+    orElse: () => planned,
+  );
 }
 
 void demoEnum() {

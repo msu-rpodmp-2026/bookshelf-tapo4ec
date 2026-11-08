@@ -5,14 +5,70 @@ typedef Book = Map<String, Object?>;
 typedef BookPredicate = bool Function(Book book);
 
 final List<Book> library = [
-  {'title': 'Основы Dart', 'author': 'С. А. Чернышев', 'year': 2024, 'pages': 521, 'genre': 'учебник', 'read': true},
-  {'title': 'Flutter на практике', 'author': 'Ф. Заметти', 'year': 2020, 'pages': 328, 'genre': 'учебник', 'read': false},
-  {'title': 'Мастер и Маргарита', 'author': 'М. Булгаков', 'year': 1966, 'pages': 480, 'genre': 'роман', 'read': true},
-  {'title': 'Война и мир', 'author': 'Л. Толстой', 'year': 1869, 'pages': 1274, 'genre': 'роман', 'read': false},
-  {'title': 'Преступление и наказание', 'author': 'Ф. Достоевский', 'year': 1866, 'pages': 671, 'genre': 'роман', 'read': true},
-  {'title': 'Дюна', 'author': 'Ф. Герберт', 'year': 1965, 'pages': 688, 'genre': 'фантастика', 'read': false},
-  {'title': '451 градус по Фаренгейту', 'author': 'Р. Брэдбери', 'year': 1953, 'pages': 256, 'genre': 'фантастика', 'read': true},
-  {'title': 'Чистый код', 'author': 'Р. Мартин', 'year': 2008, 'pages': 464, 'genre': 'программирование', 'read': false},
+  {
+    'title': 'Основы Dart',
+    'author': 'С. А. Чернышев',
+    'year': 2024,
+    'pages': 521,
+    'genre': 'учебник',
+    'read': true
+  },
+  {
+    'title': 'Flutter на практике',
+    'author': 'Ф. Заметти',
+    'year': 2020,
+    'pages': 328,
+    'genre': 'учебник',
+    'read': false
+  },
+  {
+    'title': 'Мастер и Маргарита',
+    'author': 'М. Булгаков',
+    'year': 1966,
+    'pages': 480,
+    'genre': 'роман',
+    'read': true
+  },
+  {
+    'title': 'Война и мир',
+    'author': 'Л. Толстой',
+    'year': 1869,
+    'pages': 1274,
+    'genre': 'роман',
+    'read': false
+  },
+  {
+    'title': 'Преступление и наказание',
+    'author': 'Ф. Достоевский',
+    'year': 1866,
+    'pages': 671,
+    'genre': 'роман',
+    'read': true
+  },
+  {
+    'title': 'Дюна',
+    'author': 'Ф. Герберт',
+    'year': 1965,
+    'pages': 688,
+    'genre': 'фантастика',
+    'read': false
+  },
+  {
+    'title': '451 градус по Фаренгейту',
+    'author': 'Р. Брэдбери',
+    'year': 1953,
+    'pages': 256,
+    'genre': 'фантастика',
+    'read': true
+  },
+  {
+    'title': 'Чистый код',
+    'author': 'Р. Мартин',
+    'year': 2008,
+    'pages': 464,
+    'genre': 'программирование',
+    'read': false
+  },
 ];
 
 Function makeCounter() {
@@ -47,7 +103,10 @@ void main() {
       case '4':
         stdout.write('Введите жанр: ');
         final genre = (stdin.readLineSync(encoding: utf8) ?? '').trim();
-        printAll(filter(library, (b) => (b['genre'] as String).toLowerCase() == genre.toLowerCase()));
+        printAll(filter(
+            library,
+            (b) =>
+                (b['genre'] as String).toLowerCase() == genre.toLowerCase()));
       case '5':
         stdout.write('Показать прочитанные (1) или непрочитанные (0)? ');
         final isRead = stdin.readLineSync(encoding: utf8)?.trim() == '1';
@@ -146,11 +205,14 @@ void printStatistics(List<Book> books) {
   final readCount = books.where((b) => b['read'] == true).length;
   final totalPages = books.fold<int>(0, (sum, b) => sum + (b['pages'] as int));
   final avgPages = totalPages / total;
-  final oldest = books.reduce((a, b) => (a['year'] as int) < (b['year'] as int) ? a : b);
-  final newest = books.reduce((a, b) => (a['year'] as int) > (b['year'] as int) ? a : b);
-  final largest = books.reduce((a, b) => (a['pages'] as int) > (b['pages'] as int) ? a : b);
+  final oldest =
+      books.reduce((a, b) => (a['year'] as int) < (b['year'] as int) ? a : b);
+  final newest =
+      books.reduce((a, b) => (a['year'] as int) > (b['year'] as int) ? a : b);
+  final largest =
+      books.reduce((a, b) => (a['pages'] as int) > (b['pages'] as int) ? a : b);
   final genres = books.map((b) => b['genre'] as String).toSet().join(', ');
-  
+
   final Map<String, int> genreCounts = {};
   for (var b in books) {
     final g = b['genre'] as String;
@@ -159,7 +221,8 @@ void printStatistics(List<Book> books) {
 
   print('\n--- СТАТИСТИКА ---');
   print('Всего книг: $total (Прочитано: $readCount)');
-  print('Всего страниц: $totalPages (В среднем: ${avgPages.toStringAsFixed(1)})');
+  print(
+      'Всего страниц: $totalPages (В среднем: ${avgPages.toStringAsFixed(1)})');
   print('Самая старая: ${oldest['title']} (${oldest['year']})');
   print('Самая новая: ${newest['title']} (${newest['year']})');
   print('Самая объемная: ${largest['title']} (${largest['pages']} стр.)');
@@ -211,10 +274,12 @@ void deleteBook(List<Book> books) {
     return;
   }
   printAll(books);
-  final index = askInt('Введите номер книги для удаления', min: 1, max: books.length) - 1;
-  stdout.write('Вы уверены, что хотите удалить "${books[index]['title']}"? (да/нет): ');
+  final index =
+      askInt('Введите номер книги для удаления', min: 1, max: books.length) - 1;
+  stdout.write(
+      'Вы уверены, что хотите удалить "${books[index]['title']}"? (да/нет): ');
   final confirm = stdin.readLineSync(encoding: utf8)?.trim().toLowerCase();
-  
+
   if (confirm == 'да' || confirm == 'yes' || confirm == 'y') {
     books.removeAt(index);
     print('Книга удалена.');

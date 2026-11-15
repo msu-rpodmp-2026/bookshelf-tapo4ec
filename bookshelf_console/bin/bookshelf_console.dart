@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:convert';
-import 'dart:typed_data';
 
 // ============================================================
 // ЗАДАНИЕ 1. Расширенное перечисление
@@ -500,7 +499,7 @@ void main() {
   print('== Книги ==');
   for (final it in lib.items) {
     it.printCard();
-    final b = it as Book;
+    final b = it;
     print('shortTitle: ${b.shortTitle}, age: ${b.age}, '
         'hours: ${b.readingHours.toStringAsFixed(1)}');
   }

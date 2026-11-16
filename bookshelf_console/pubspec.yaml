@@ -1,4 +1,4 @@
-name: bookshelf_console
+name: book_shelf
 description: A sample command-line application for BookShelf lab.
 version: 1.0.0
 publish_to: 'none'

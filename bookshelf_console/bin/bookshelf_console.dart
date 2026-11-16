@@ -94,10 +94,11 @@ String? _readLine(String prompt) {
   } catch (_) {
     final buffer = StringBuffer();
     for (final byte in bytes) {
-      if (byte < 0x80)
+      if (byte < 0x80) {
         buffer.writeCharCode(byte);
-      else
+      } else {
         buffer.write(_cp866ToUnicode[byte] ?? '?');
+      }
     }
     return buffer.toString().trim();
   }
@@ -155,11 +156,13 @@ void main() {
 
     switch (line) {
       case '1':
-        if (lib.count == 0)
+        if (lib.count == 0) {
           print('(библиотека пуста)');
-        else
-          for (final b in lib.items)
+        } else {
+          for (final b in lib.items) {
             print('${b.title} — ${b.author} (${b.year}) [${b.status.label}]');
+          }
+        }
         break;
 
       case '2':
@@ -184,12 +187,18 @@ void main() {
 
       case '4':
         final q = _readLine('Запрос: ');
-        if (q == null) break;
+        if (q == null) {
+          break;
+        }
+
         final res = lib.search(q).toList();
-        if (res.isEmpty)
+        if (res.isEmpty) {
           print('Ничего не найдено.');
-        else
-          for (final b in res) print(b.describe());
+        } else {
+          for (final b in res) {
+            print(b.describe());
+          }
+        }
         break;
 
       case '5':
@@ -208,29 +217,42 @@ void main() {
         print('1. Прочитанные');
         print('2. Непрочитанные (в планах / читаю)');
         final mode = _readLine('> ');
-        if (mode == null) break;
+
+        if (mode == null) {
+          break;
+        }
 
         final filtered =
             lib.where((b) => mode == '1' ? b.status.isDone : !b.status.isDone);
-        if (filtered.isEmpty)
+
+        if (filtered.isEmpty) {
           print('Нет книг по заданному фильтру.');
-        else
-          for (final b in filtered) print('${b.title} [${b.status.label}]');
+        } else {
+          for (final b in filtered) {
+            print('${b.title} [${b.status.label}]');
+          }
+        }
         break;
 
       case '7':
         print('1. По названию (А-Я)');
         print('2. По году (сначала новые)');
         final sortMode = _readLine('> ');
-        if (sortMode == null) break;
+
+        if (sortMode == null) {
+          break;
+        }
 
         final sortedList = [...lib.items]; // копия
-        if (sortMode == '1')
+        if (sortMode == '1') {
           sortedList.sort(); // использует compareTo
-        else if (sortMode == '2')
+        } else if (sortMode == '2') {
           sortedList.sort((a, b) => b.year.compareTo(a.year));
+        }
 
-        for (final b in sortedList) print('${b.title} (${b.year})');
+        for (final b in sortedList) {
+          print('${b.title} (${b.year})');
+        }
         break;
 
       case '8':

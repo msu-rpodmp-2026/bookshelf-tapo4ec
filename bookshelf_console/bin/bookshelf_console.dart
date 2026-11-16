@@ -86,19 +86,17 @@ String? _readLine(String prompt) {
     if (b != 13) bytes.add(b);
   }
 
-  // Если поток закрыт (Ctrl+D / Ctrl+Z) и мы ничего не прочитали
-  if (b == -1 && bytes.isEmpty) return null;
+  if (b == -1 && bytes.isEmpty) return null; // EOF
 
   try {
     return utf8.decode(bytes).trim();
   } catch (_) {
     final buffer = StringBuffer();
     for (final byte in bytes) {
-      if (byte < 0x80) {
+      if (byte < 0x80)
         buffer.writeCharCode(byte);
-      } else {
+      else
         buffer.write(_cp866ToUnicode[byte] ?? '?');
-      }
     }
     return buffer.toString().trim();
   }
@@ -107,24 +105,32 @@ String? _readLine(String prompt) {
 void main() {
   final lib = Library<Book>();
 
-  // Базовая инициализация демо-данными (без сложного вывода в консоль при старте)
+  // === ДЕМОНСТРАЦИЯ ИЗ ЗАДАНИЯ 6 ===
+  print('--- Демонстрация == и Set ---');
+  final b1 = Book(title: 'Мастер и Маргарита', author: 'Булгаков', year: 1967);
+  final b2 = Book(title: 'Мастер и Маргарита', author: 'Булгаков', year: 1967);
+  print('b1 == b2: ${b1 == b2}');
+  final set = {b1, b2};
+  print(
+      'Книг в Set после добавления двух одинаковых: ${set.length} (ожидается 1)');
+  print('-----------------------------\n');
+
+  // Демо-данные
   lib
-    ..add(Book(
-        title: 'Мастер и Маргарита',
-        author: 'Булгаков',
-        year: 1967,
-        genres: {'роман'}))
+    ..add(b1)
     ..add(PaperBook(
         title: 'Дюна',
         author: 'Герберт',
         shelf: 'B-3',
         year: 1965,
+        pages: 600,
         genres: {'фантастика'}))
     ..add(EBook(
         title: 'Clean Code',
         author: 'Martin',
         format: 'pdf',
         year: 2008,
+        pages: 464,
         genres: {'программирование'},
         status: ReadingStatus.reading))
     ..add(AudioBook(
@@ -142,15 +148,15 @@ void main() {
     print('3. Найти по названию');
     print('4. Поиск (по всем полям)');
     print('5. Удалить книгу');
-    print('6. Показать только прочитанные/непрочитанные');
-    print('7. Сортировать по названию/году');
-    print('8. Выход');
+    print('6. Показать прочитанные/непрочитанные');
+    print('7. Сортировать книги');
+    print('8. Статистика по жанрам (countByGenre)');
+    print('9. Выход');
 
     final line = _readLine('> ');
 
-    // Обработка End Of File (Ctrl+D / Ctrl+Z)
     if (line == null) {
-      print('\n[Завершение ввода. Выход из программы.]');
+      print('\n[Завершение ввода. Выход.]');
       break;
     }
 
@@ -167,30 +173,49 @@ void main() {
 
       case '2':
         final t = _readLine('Название: ');
-        if (t == null) break; // Защита от Ctrl+D при вводе названия
+        if (t == null) return;
         if (t.isEmpty) {
           print('Название не может быть пустым.');
           break;
         }
         final a = _readLine('Автор: ');
-        if (a == null) break;
-        lib.add(Book(title: t, author: a));
+        if (a == null) return;
+
+        // Ввод дополнительных полей
+        final yStr = _readLine('Год (Enter - пропустить): ');
+        final pStr = _readLine('Страницы (Enter - пропустить): ');
+        final gStr = _readLine('Жанр (Enter - пропустить): ');
+        print(
+            'Статус: 0-Запланирована, 1-Читаю, 2-Прочитана, 3-Брошена (Enter - 0)');
+        final sStr = _readLine('> ');
+
+        final year = int.tryParse(yStr ?? '') ?? 0;
+        final pages = int.tryParse(pStr ?? '') ?? 0;
+        final genres = (gStr != null && gStr.isNotEmpty) ? {gStr} : <String>{};
+        final status = sStr != null && sStr.isNotEmpty
+            ? ReadingStatus.values[int.tryParse(sStr) ?? 0]
+            : ReadingStatus.planned;
+
+        lib.add(Book(
+            title: t,
+            author: a,
+            year: year,
+            pages: pages,
+            genres: genres,
+            status: status));
         print('Добавлено. Всего книг: ${lib.count}');
         break;
 
       case '3':
         final t = _readLine('Название: ');
-        if (t == null) break;
+        if (t == null) return;
         final f = lib.findByTitle(t);
         print(f == null ? 'Не найдено' : f.describe());
         break;
 
       case '4':
         final q = _readLine('Запрос: ');
-        if (q == null) {
-          break;
-        }
-
+        if (q == null) return;
         final res = lib.search(q).toList();
         if (res.isEmpty) {
           print('Ничего не найдено.');
@@ -203,7 +228,7 @@ void main() {
 
       case '5':
         final t = _readLine('Название для удаления: ');
-        if (t == null) break;
+        if (t == null) return;
         final b = lib.findByTitle(t);
         if (b != null) {
           lib.remove(b);
@@ -217,14 +242,10 @@ void main() {
         print('1. Прочитанные');
         print('2. Непрочитанные (в планах / читаю)');
         final mode = _readLine('> ');
-
-        if (mode == null) {
-          break;
-        }
+        if (mode == null) return;
 
         final filtered =
             lib.where((b) => mode == '1' ? b.status.isDone : !b.status.isDone);
-
         if (filtered.isEmpty) {
           print('Нет книг по заданному фильтру.');
         } else {
@@ -237,25 +258,38 @@ void main() {
       case '7':
         print('1. По названию (А-Я)');
         print('2. По году (сначала новые)');
+        print('3. По автору (А-Я)');
+        print('4. По объему страниц (сначала толстые)');
         final sortMode = _readLine('> ');
+        if (sortMode == null) return;
 
-        if (sortMode == null) {
-          break;
-        }
-
-        final sortedList = [...lib.items]; // копия
+        final sortedList = [...lib.items];
         if (sortMode == '1') {
-          sortedList.sort(); // использует compareTo
+          sortedList.sort();
         } else if (sortMode == '2') {
           sortedList.sort((a, b) => b.year.compareTo(a.year));
+        } else if (sortMode == '3') {
+          sortedList.sort((a, b) =>
+              a.author.toLowerCase().compareTo(b.author.toLowerCase()));
+        } else if (sortMode == '4') {
+          sortedList.sort((a, b) => b.pages.compareTo(a.pages));
         }
 
         for (final b in sortedList) {
-          print('${b.title} (${b.year})');
+          print('${b.title} — ${b.author} (${b.year}), ${b.pages} с.');
         }
         break;
 
       case '8':
+        final map = lib.countByGenre();
+        if (map.isEmpty) {
+          print('(жанров нет)');
+        } else {
+          map.forEach((g, c) => print('$g: $c'));
+        }
+        break;
+
+      case '9':
         return;
 
       default:

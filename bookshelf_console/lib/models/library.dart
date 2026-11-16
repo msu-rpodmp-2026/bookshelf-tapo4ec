@@ -3,6 +3,8 @@ import 'library_item.dart';
 
 class Library<T extends LibraryItem> {
   final List<T> _items = [];
+
+  // List.from, чтобы можно было делать копии и сортировать без ошибок
   List<T> get items => List<T>.from(_items);
   int get count => _items.length;
 
@@ -35,4 +37,17 @@ class Library<T extends LibraryItem> {
   }
 
   Iterable<T> where(bool Function(T) test) => _items.where(test);
+
+  // ВОЗВРАЩЕННЫЙ МЕТОД ИЗ ЗАДАНИЯ 7
+  Map<String, int> countByGenre() {
+    final res = <String, int>{};
+    for (final it in _items) {
+      if (it is Book) {
+        for (final g in it.genres) {
+          res[g] = (res[g] ?? 0) + 1;
+        }
+      }
+    }
+    return res;
+  }
 }

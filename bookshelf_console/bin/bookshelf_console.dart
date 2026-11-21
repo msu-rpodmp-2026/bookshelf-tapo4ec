@@ -173,28 +173,112 @@ void main() {
 
       case '2':
         final t = _readLine('Название: ');
-        if (t == null) return;
+        if (t == null) {
+          print('\n[Ввод прерван. Добавление отменено.]');
+          return;
+        }
         if (t.isEmpty) {
-          print('Название не может быть пустым.');
+          print('Ошибка: Название не может быть пустым. Введите значение.');
+          break; // Возврат в меню
+        }
+
+        final a = _readLine('Автор: ');
+        if (a == null) {
+          print('\n[Ввод прерван. Добавление отменено.]');
+          return;
+        }
+        if (a.isEmpty) {
+          print('Ошибка: Автор не может быть пустым. Введите значение.');
+          break; // Возврат в меню
+        }
+
+        // Ввод Года с проверкой на пустую строку
+        int year = 0;
+        while (true) {
+          final yStr = _readLine('Год: ');
+          if (yStr == null) {
+            print('\n[Ввод прерван. Добавление отменено.]');
+            return;
+          }
+          if (yStr.isEmpty) {
+            print('Ошибка: поле Год не может быть пустым. Введите значение.');
+            continue; // Повторяем ввод года
+          }
+          final parsedYear = int.tryParse(yStr);
+          if (parsedYear == null) {
+            print('Ошибка: введите корректный год (число).');
+            continue;
+          }
+          year = parsedYear;
           break;
         }
-        final a = _readLine('Автор: ');
-        if (a == null) return;
 
-        // Ввод дополнительных полей
-        final yStr = _readLine('Год (Enter - пропустить): ');
-        final pStr = _readLine('Страницы (Enter - пропустить): ');
-        final gStr = _readLine('Жанр (Enter - пропустить): ');
-        print(
-            'Статус: 0-Запланирована, 1-Читаю, 2-Прочитана, 3-Брошена (Enter - 0)');
-        final sStr = _readLine('> ');
+        // Ввод Страниц с проверкой на пустую строку
+        int pages = 0;
+        while (true) {
+          final pStr = _readLine('Страницы: ');
+          if (pStr == null) {
+            print('\n[Ввод прерван. Добавление отменено.]');
+            return;
+          }
+          if (pStr.isEmpty) {
+            print(
+                'Ошибка: поле Страницы не может быть пустым. Введите значение.');
+            continue; // Повторяем ввод страниц
+          }
+          final parsedPages = int.tryParse(pStr);
+          if (parsedPages == null || parsedPages <= 0) {
+            print('Ошибка: введите положительное число страниц.');
+            continue;
+          }
+          pages = parsedPages;
+          break;
+        }
 
-        final year = int.tryParse(yStr ?? '') ?? 0;
-        final pages = int.tryParse(pStr ?? '') ?? 0;
-        final genres = (gStr != null && gStr.isNotEmpty) ? {gStr} : <String>{};
-        final status = sStr != null && sStr.isNotEmpty
-            ? ReadingStatus.values[int.tryParse(sStr) ?? 0]
-            : ReadingStatus.planned;
+        // Ввод Жанра (обязательный)
+        String genre = '';
+        while (true) {
+          final gStr = _readLine('Жанр: ');
+          if (gStr == null) {
+            print('\n[Ввод прерван. Добавление отменено.]');
+            return;
+          }
+          if (gStr.isEmpty) {
+            print('Ошибка: поле Жанр не может быть пустым. Введите значение.');
+            continue; // Повторяем ввод жанра
+          }
+          genre = gStr;
+          break;
+        }
+        final genres = {genre}; // Создаем Set с одним жанром
+
+        // Статус с обязательным вводом
+        ReadingStatus status = ReadingStatus.planned;
+        while (true) {
+          print('Статус: 0-Запланирована, 1-Читаю, 2-Прочитана, 3-Брошена');
+          final sStr = _readLine('> ');
+
+          if (sStr == null) {
+            print('\n[Ввод прерван. Добавление отменено.]');
+            return;
+          }
+
+          // Если пусто — требуем ввести
+          if (sStr.isEmpty) {
+            print(
+                'Ошибка: поле Статус не может быть пустым. Введите число от 0 до 3.');
+            continue;
+          }
+
+          final sInt = int.tryParse(sStr);
+          if (sInt == null || sInt < 0 || sInt > 3) {
+            print('Ошибка: введите число от 0 до 3.');
+            continue;
+          }
+
+          status = ReadingStatus.values[sInt];
+          break;
+        }
 
         lib.add(Book(
             title: t,
@@ -205,7 +289,6 @@ void main() {
             status: status));
         print('Добавлено. Всего книг: ${lib.count}');
         break;
-
       case '3':
         final t = _readLine('Название: ');
         if (t == null) return;

@@ -56,7 +56,7 @@ class Book extends LibraryItem
         genres.any((g) => g.toLowerCase().contains(q));
   }
 
-  @override
+  // === Задание 2: Сериализация ===
   Map<String, dynamic> toJson() => {
         'title': title,
         'author': author,
@@ -66,6 +66,16 @@ class Book extends LibraryItem
         'status': status.name,
         if (_rating != null) 'rating': _rating,
       };
+
+  factory Book.fromJson(Map<String, dynamic> j) => Book(
+        title: j['title'] as String? ?? 'Без названия',
+        author: j['author'] as String? ?? 'Автор неизвестен',
+        year: (j['year'] as num?)?.toInt() ?? 0,
+        pages: (j['pages'] as num?)?.toInt() ?? 0,
+        genres: (j['genres'] as List?)?.cast<String>().toSet() ?? <String>{},
+        status: ReadingStatus.fromName(j['status'] as String? ?? ''),
+        rating: (j['rating'] as num?)?.toDouble(),
+      );
 
   @override
   String toString() => 'Book($title, $author, $year)';

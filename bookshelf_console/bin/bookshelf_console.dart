@@ -1,14 +1,11 @@
 import 'dart:io';
 import 'dart:convert';
 
-import 'package:book_shelf/models/audio_book.dart';
 import 'package:book_shelf/models/book.dart';
-import 'package:book_shelf/models/ebook.dart';
 import 'package:book_shelf/models/library.dart';
-import 'package:book_shelf/models/paper_book.dart';
+import 'package:book_shelf/models/library_storage.dart';
 import 'package:book_shelf/models/reading_status.dart';
 
-// Конвертация CP866 -> UTF-8 для Windows
 const Map<int, String> _cp866ToUnicode = {
   0x80: 'А',
   0x81: 'Б',
@@ -85,61 +82,104 @@ String? _readLine(String prompt) {
   while ((b = stdin.readByteSync()) != 10 && b != -1) {
     if (b != 13) bytes.add(b);
   }
-
-  if (b == -1 && bytes.isEmpty) return null; // EOF
+  if (b == -1 && bytes.isEmpty) return null;
 
   try {
     return utf8.decode(bytes).trim();
   } catch (_) {
     final buffer = StringBuffer();
     for (final byte in bytes) {
-      if (byte < 0x80)
+      if (byte < 0x80) {
         buffer.writeCharCode(byte);
-      else
+      } else {
         buffer.write(_cp866ToUnicode[byte] ?? '?');
+      }
     }
     return buffer.toString().trim();
   }
 }
 
-void main() {
+class LibraryFormatException implements Exception {
+  final String message;
+  final int line;
+  LibraryFormatException(this.message, this.line);
+  @override
+  String toString() => 'Ошибка в строке $line: $message';
+}
+
+void main(List<String> args) async {
+  String dataDir = 'data';
+  bool exportCsvFlag = false;
+  bool importCsvFlag = false;
+  bool statsFlag = false;
+  bool helpFlag = false;
+
+  for (final arg in args) {
+    if (arg == '--export-csv') {
+      exportCsvFlag = true;
+    } else if (arg == '--import-csv') {
+      importCsvFlag = true;
+    } else if (arg == '--stats') {
+      statsFlag = true;
+    } else if (arg == '--help') {
+      helpFlag = true;
+    } else if (!arg.startsWith('--')) {
+      dataDir = arg;
+    }
+  }
+
+  if (helpFlag) {
+    print('Использование: dart run bin/bookshelf_console.dart [путь] [флаги]');
+    print('Флаги: --export-csv, --import-csv, --stats, --help');
+    return;
+  }
+
+  final storage = LibraryStorage(dataDir);
   final lib = Library<Book>();
 
-  // === ДЕМОНСТРАЦИЯ ИЗ ЗАДАНИЯ 6 ===
-  print('--- Демонстрация == и Set ---');
-  final b1 = Book(title: 'Мастер и Маргарита', author: 'Булгаков', year: 1967);
-  final b2 = Book(title: 'Мастер и Маргарита', author: 'Булгаков', year: 1967);
-  print('b1 == b2: ${b1 == b2}');
-  final set = {b1, b2};
-  print(
-      'Книг в Set после добавления двух одинаковых: ${set.length} (ожидается 1)');
-  print('-----------------------------\n');
+  try {
+    print('Загрузка каталога из $dataDir...');
+    final loadedBooks = await storage.load();
+    for (final b in loadedBooks) {
+      lib.add(b);
+    }
+    print('Загружено книг: ${lib.count}');
+  } on PathNotFoundException {
+    print('Файл каталога не найден — создан новый пустой каталог.');
+  } on FormatException catch (e) {
+    print('Файл повреждён: ${e.message}');
+  } on FileSystemException catch (e) {
+    print('Ошибка файловой системы: ${e.message} код(${e.osError?.errorCode})');
+    rethrow;
+  } finally {
+    print('Загрузка завершена.\n');
+  }
 
-  // Демо-данные
-  lib
-    ..add(b1)
-    ..add(PaperBook(
-        title: 'Дюна',
-        author: 'Герберт',
-        shelf: 'B-3',
-        year: 1965,
-        pages: 600,
-        genres: {'фантастика'}))
-    ..add(EBook(
-        title: 'Clean Code',
-        author: 'Martin',
-        format: 'pdf',
-        year: 2008,
-        pages: 464,
-        genres: {'программирование'},
-        status: ReadingStatus.reading))
-    ..add(AudioBook(
-        title: 'Гарри Поттер',
-        author: 'Роулинг',
-        duration: const Duration(hours: 9),
-        narrator: 'Клюквин',
-        genres: {'фэнтези'},
-        status: ReadingStatus.finished));
+  if (exportCsvFlag) {
+    await storage.exportCsv(lib.items);
+    print('Экспорт в CSV завершен.');
+    return;
+  }
+
+  if (importCsvFlag) {
+    try {
+      final imported = await storage.importCsv();
+      for (final b in imported) {
+        lib.add(b);
+      }
+      await storage.save(lib.items);
+      print('Импортировано книг: ${imported.length}');
+    } on FileSystemException catch (e) {
+      print('Ошибка чтения CSV: ${e.message}');
+    }
+    return;
+  }
+
+  if (statsFlag) {
+    print('Всего книг: ${lib.count}');
+    print('Жанры: ${lib.countByGenre()}');
+    return;
+  }
 
   while (true) {
     print('\n=== BookShelf ===');
@@ -150,13 +190,16 @@ void main() {
     print('5. Удалить книгу');
     print('6. Показать прочитанные/непрочитанные');
     print('7. Сортировать книги');
-    print('8. Статистика по жанрам (countByGenre)');
-    print('9. Выход');
+    print('8. Экспорт в CSV');
+    print('9. Импорт из CSV');
+    print('10. Резервная копия');
+    print('11. Выход');
 
     final line = _readLine('> ');
 
     if (line == null) {
-      print('\n[Завершение ввода. Выход.]');
+      print('\n[Завершение ввода. Сохранение и выход.]');
+      await storage.save(lib.items);
       break;
     }
 
@@ -178,8 +221,8 @@ void main() {
           return;
         }
         if (t.isEmpty) {
-          print('Ошибка: Название не может быть пустым. Введите значение.');
-          break; // Возврат в меню
+          print('Ошибка: Название не может быть пустым.');
+          break;
         }
 
         final a = _readLine('Автор: ');
@@ -188,12 +231,11 @@ void main() {
           return;
         }
         if (a.isEmpty) {
-          print('Ошибка: Автор не может быть пустым. Введите значение.');
-          break; // Возврат в меню
+          print('Ошибка: Автор не может быть пустым.');
+          break;
         }
 
-        // Ввод Года с проверкой на пустую строку
-        int year = 0;
+        int year;
         while (true) {
           final yStr = _readLine('Год: ');
           if (yStr == null) {
@@ -202,7 +244,7 @@ void main() {
           }
           if (yStr.isEmpty) {
             print('Ошибка: поле Год не может быть пустым. Введите значение.');
-            continue; // Повторяем ввод года
+            continue;
           }
           final parsedYear = int.tryParse(yStr);
           if (parsedYear == null) {
@@ -213,8 +255,7 @@ void main() {
           break;
         }
 
-        // Ввод Страниц с проверкой на пустую строку
-        int pages = 0;
+        int pages;
         while (true) {
           final pStr = _readLine('Страницы: ');
           if (pStr == null) {
@@ -224,7 +265,7 @@ void main() {
           if (pStr.isEmpty) {
             print(
                 'Ошибка: поле Страницы не может быть пустым. Введите значение.');
-            continue; // Повторяем ввод страниц
+            continue;
           }
           final parsedPages = int.tryParse(pStr);
           if (parsedPages == null || parsedPages <= 0) {
@@ -235,7 +276,6 @@ void main() {
           break;
         }
 
-        // Ввод Жанра (обязательный)
         String genre = '';
         while (true) {
           final gStr = _readLine('Жанр: ');
@@ -245,14 +285,12 @@ void main() {
           }
           if (gStr.isEmpty) {
             print('Ошибка: поле Жанр не может быть пустым. Введите значение.');
-            continue; // Повторяем ввод жанра
+            continue;
           }
           genre = gStr;
           break;
         }
-        final genres = {genre}; // Создаем Set с одним жанром
 
-        // Статус с обязательным вводом
         ReadingStatus status = ReadingStatus.planned;
         while (true) {
           print('Статус: 0-Запланирована, 1-Читаю, 2-Прочитана, 3-Брошена');
@@ -262,20 +300,16 @@ void main() {
             print('\n[Ввод прерван. Добавление отменено.]');
             return;
           }
-
-          // Если пусто — требуем ввести
           if (sStr.isEmpty) {
             print(
                 'Ошибка: поле Статус не может быть пустым. Введите число от 0 до 3.');
             continue;
           }
-
           final sInt = int.tryParse(sStr);
           if (sInt == null || sInt < 0 || sInt > 3) {
             print('Ошибка: введите число от 0 до 3.');
             continue;
           }
-
           status = ReadingStatus.values[sInt];
           break;
         }
@@ -285,10 +319,12 @@ void main() {
             author: a,
             year: year,
             pages: pages,
-            genres: genres,
+            genres: {genre},
             status: status));
-        print('Добавлено. Всего книг: ${lib.count}');
+        await storage.save(lib.items);
+        print('Добавлено и сохранено. Всего книг: ${lib.count}');
         break;
+
       case '3':
         final t = _readLine('Название: ');
         if (t == null) return;
@@ -315,7 +351,8 @@ void main() {
         final b = lib.findByTitle(t);
         if (b != null) {
           lib.remove(b);
-          print('Книга «${b.title}» удалена.');
+          await storage.save(lib.items);
+          print('Книга «${b.title}» удалена и каталог сохранен.');
         } else {
           print('Книга не найдена.');
         }
@@ -364,15 +401,29 @@ void main() {
         break;
 
       case '8':
-        final map = lib.countByGenre();
-        if (map.isEmpty) {
-          print('(жанров нет)');
-        } else {
-          map.forEach((g, c) => print('$g: $c'));
-        }
+        await storage.exportCsv(lib.items);
+        print('Экспорт в CSV выполнен (library.csv).');
         break;
 
       case '9':
+        final imported = await storage.importCsv();
+        for (final b in imported) {
+          lib.add(b);
+        }
+        await storage.save(lib.items);
+        print('Импортировано книг: ${imported.length}');
+        break;
+
+      case '10':
+        final success = await storage.backup();
+        print(success
+            ? 'Резервная копия создана.'
+            : 'Нет данных для копирования.');
+        break;
+
+      case '11':
+        await storage.save(lib.items);
+        print('Сохранено записей: ${lib.count}');
         return;
 
       default:
